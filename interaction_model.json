@@ -1,0 +1,134 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "restaurant picker",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "CuisineIntent",
+                    "slots": [
+                        {
+                            "name": "FoodType",
+                            "type": "AMAZON.Language"
+                        }
+                    ],
+                    "samples": [
+                        "{FoodType}",
+                        "I think {FoodType}",
+                        "I like {FoodType}",
+                        "I want to eat {FoodType}"
+                    ]
+                },
+                {
+                    "name": "LocationIntent",
+                    "slots": [
+                        {
+                            "name": "City",
+                            "type": "AMAZON.US_CITY"
+                        }
+                    ],
+                    "samples": [
+                        "in {City}",
+                        "{City} is where I live",
+                        "{City}",
+                        "I live in {City}"
+                    ]
+                },
+                {
+                    "name": "YesOrNoIntent",
+                    "slots": [
+                        {
+                            "name": "Confirmation",
+                            "type": "ConfirmationSlot"
+                        }
+                    ],
+                    "samples": [
+                        "{Confirmation}"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "FoodTypeSlot",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "AMAZON.FoodEstablishment"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "AMAZON.Dessert"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "AMAZON.Language"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "AMAZON.Food"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "ConfirmationSlot",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "No"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Yes"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "AMAZON.Language",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Asian"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Western"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Canadian"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "American"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
