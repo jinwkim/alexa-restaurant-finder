@@ -111,11 +111,11 @@ const ResultHandler = {
 		
 		if (yesorno === "yes"){
 			// Call GET to Yelp API using the helper function httpGet() below
-			// const response = await httpGet();
-			// console.log(response);
+			const response = await httpGet();
+			console.log(response);
 
 			speakOutput += "I recommend checking out the following restaurants. ";
-			// speakOutput += response.businesses[0].name;
+			speakOutput += response.businesses[0].name;
 
 		} else {
 			speakOutput += "Please restart this skill.";
