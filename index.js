@@ -117,11 +117,11 @@ const ResultHandler = {
 
 			const APIresponse = await httpGet(foodType,city);
 			console.log(APIresponse);
-			// attributes.APIresponse = APIresponse.businesses[1].name;
+			attributes.NameOfRestaurant = APIresponse.businesses[1].name;
 			attributes.NumRes = APIresponse.total;
 
 			speakOutput += "I recommend checking out the following restaurants. ";
-			speakOutput += attributes.NumRes;
+			speakOutput += attributes.NameOfRestaurant;
 		}
 
 		// var APIresponse = await testHttpGet();
