@@ -208,7 +208,7 @@ function httpGet(keyTerm,location) {
   return new Promise(((resolve, reject) => {
     var options = {
         host: 'api.yelp.com',
-        path: '/v3/businesses/search?term=sushi&location=Boston&limit=3&sort_by=review_count&open_now=true&radius=4800',
+        path: '/v3/businesses/search?term='+keyTerm+'&location='+location+'&limit=3&sort_by=review_count&open_now=true&radius=4800',
         method: 'GET',
         headers: {
 					Authorization: 'Bearer 5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
