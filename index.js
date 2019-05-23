@@ -108,25 +108,26 @@ const ResultHandler = {
 
 		var speakOutput = "Test script. ";
 		
-		// if (yesorno === "no"){
-		// 	speakOutput += "Please restart this skill.";
-		// } else {
-		//     // Call GET to Yelp API using the helper function httpGet() below
-		//     var foodType = attributes.foodType;
-		//     var city = attributes.city;
+		if (yesorno === "no"){
+			speakOutput += "Please restart this skill.";
+		} else {
+		    // Call GET to Yelp API using the helper function httpGet() below
+		    var foodType = attributes.foodType;
+		    var city = attributes.city;
 
-		// 	const APIresponse = await httpGet(foodType,city);
-		// 	console.log(APIresponse);
-		// 	attributes.APIresponse = APIresponse.businesses[0].name;
+			const APIresponse = await httpGet(foodType,city);
+			console.log(APIresponse);
+			// attributes.APIresponse = APIresponse.businesses[1].name;
+			attributes.NumRes = APIresponse.total;
 
-		// 	speakOutput += "I recommend checking out the following restaurants. ";
-		// 	speakOutput += response.businesses[0].name;
-		// }
+			speakOutput += "I recommend checking out the following restaurants. ";
+			speakOutput += attributes.NumRes;
+		}
 
-		var APIresponse = await testHttpGet();
-		console.log(APIresponse);
+		// var APIresponse = await testHttpGet();
+		// console.log(APIresponse);
 
-		speakOutput += APIresponse.value.joke;
+		// speakOutput += APIresponse.value.joke;
 
 		return handlerInput.responseBuilder.speak(speakOutput).getResponse(false);
 	},
@@ -206,7 +207,6 @@ function httpGet(keyTerm,location) {
         path: '/v3/businesses/search?term=sushi&location=Boston&limit=3&sort_by=review_count&open_now=true&radius=4800',
         method: 'GET',
         headers: {
-        			'Content-Type': 'application/json',
 					Authorization: 'Bearer 5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
 				},
     };
