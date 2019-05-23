@@ -106,7 +106,7 @@ const ResultHandler = {
 		const slots = handlerInput.requestEnvelope.request.intent.slots;
 		const yesorno = slots['Confirmation'].value;
 
-		var speakOutput = "Test script. ";
+		var speakOutput = "I got some results from Yelp. ";
 		
 		if (yesorno === "no"){
 			speakOutput += "Please restart this skill.";
@@ -117,11 +117,15 @@ const ResultHandler = {
 
 			const APIresponse = await httpGet(foodType,city);
 			console.log(APIresponse);
-			attributes.NameOfRestaurant = APIresponse.businesses[1].name;
-			attributes.NumRes = APIresponse.total;
+			attributes.NameOfRestaurantOne = APIresponse.businesses[1].name;
+			attributes.NameOfRestaurantTwo = APIresponse.businesses[2].name;
+			// attributes.NameOfRestaurantThree = APIresponse.businesses[3].name;
+			// attributes.NumRes = APIresponse.total;
 
-			speakOutput += "I recommend checking out the following restaurants. ";
-			speakOutput += attributes.NameOfRestaurant;
+			speakOutput += "I recommend checking out the following restaurants. I see ";
+			speakOutput += attributes.NameOfRestaurantOne;
+			speakOutput += ". There is also " + attributes.NameOfRestaurantTwo + ".";
+			// speakOutput += "Lastly, there is " + attributes.NameOfRestaurantThree;
 		}
 
 		// var APIresponse = await testHttpGet();
@@ -232,36 +236,36 @@ function httpGet(keyTerm,location) {
   }));
 }
 
-function testHttpGet() {
-  return new Promise(((resolve, reject) => {
-    var options = {
-        host: 'api.icndb.com',
-        port: 443,
-        path: '/jokes/random',
-        method: 'GET',
-    };
+// function testHttpGet() {
+//   return new Promise(((resolve, reject) => {
+//     var options = {
+//         host: 'api.icndb.com',
+//         port: 443,
+//         path: '/jokes/random',
+//         method: 'GET',
+//     };
     
-    const request = http.request(options, (response) => {
-      // response.setEncoding('utf8');
-      let returnData = '';
+//     const request = http.request(options, (response) => {
+//       // response.setEncoding('utf8');
+//       let returnData = '';
 
-      response.on('data', (chunk) => {
-        returnData += chunk;
-      });
+//       response.on('data', (chunk) => {
+//         returnData += chunk;
+//       });
 
-      response.on('end', () => {
-        resolve(JSON.parse(returnData));
-      });
+//       response.on('end', () => {
+//         resolve(JSON.parse(returnData));
+//       });
 
-      response.on('error', (error) => {
-        reject(error);
-      });
-    });
+//       response.on('error', (error) => {
+//         reject(error);
+//       });
+//     });
 
-    request.end();
+//     request.end();
 
-  }));
-}
+//   }));
+// }
 
 /* LAMBDA SETUP */
 const skillBuilder = Alexa.SkillBuilders.custom();
