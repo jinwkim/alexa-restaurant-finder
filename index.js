@@ -1,6 +1,6 @@
 const Alexa = require('ask-sdk-core');
 
-// Initialize http var for REST to IRIS
+// Initialize http var to utilize REST API
 var http = require('http');
 
 /* INTENT HANDLERS */
@@ -26,30 +26,26 @@ const LaunchRequestHandler = {
 const CuisineHandler = {
 	canHandle(handlerInput) {
 		const request = handlerInput.requestEnvelope.request;
-		console.log("Inside NameHandler");
+		console.log("Inside CuisineHandler");
 		console.log(JSON.stringify(request));
 		
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "NameIntent") &&
-					 (attributes.stageNumber === 1);
+					 (request.intent.name === "CuisineIntent")
 	},
 	handle(handlerInput) {
-		console.log("Inside NameHandler - handle");
+		console.log("Inside CuisineHandler - handle");
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 		const response = handlerInput.responseBuilder;
 
 		const slots = handlerInput.requestEnvelope.request.intent.slots;
-		const firstName = slots['FirstName'].value;
-		const lastName = slots['LastName'].value;
+		const foodType = slots['FoodType'].value;
 
-		attributes.firstName = firstName;
-		attributes.lastName = lastName;
-		attributes.stageNumber += 1;
+		attributes.foodType = foodType;
 
-		var speakOutput = "Thank you " + firstName + ". Now, tell me the month, day, and the year of your date of birth.";
-		var repromptOutput = "Are you still there? Please tell me your date of birth.";
+		var speakOutput = "Now, in what city are you looking for restaurants?";
+		var repromptOutput = "Can you please tell me in what city you want to find restaurants?";
 
 		return response.speak(speakOutput)
 									 .reprompt(repromptOutput)
@@ -61,14 +57,13 @@ const CuisineHandler = {
 const LocationHandler = {
 	canHandle(handlerInput) {
 		const request = handlerInput.requestEnvelope.request;
-		console.log("Inside DOBHandler");
+		console.log("Inside LocationHandler");
 		console.log(JSON.stringify(request));
 
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "DOBIntent") &&
-					 (attributes.stageNumber === 2);
+					 (request.intent.name === "LocationIntent")
 	},
 	handle(handlerInput) {
 		console.log("Inside DOBHandler - handle");
@@ -76,19 +71,15 @@ const LocationHandler = {
 		const response = handlerInput.responseBuilder;
 
 		const slots = handlerInput.requestEnvelope.request.intent.slots;
-		const dateOfBirth = slots['DOB'].value;
+		const city = slots['City'].value;
 
-		attributes.DOB = dateOfBirth;
-		attributes.stageNumber += 1;
+		attributes.city = city;
+		var foodType = attributes.foodType
 		
-		var firstName = "";
-
-		if (attributes.hasOwnProperty('firstName')){
-			firstName = attributes.firstName;
-		}
-
-		var speakOutput = "Next, on a 0 to 10 pain scale, tell me the intensity of your pain by saying 0 if you have no pain, or 10 if you need immediate assistance.";
-		var repromptOutput = "Are you still there? Please tell me how you feel on a scale 0 to 10.";
+		var speakOutput = "Based on what you told me, you want to look for " + foodType + " in " + city + ". ";
+		speakOutput += "Is this correct? Please say yes or no.";
+		
+		var repromptOutput = "Can you please confirm? Please say yes or no.";
 
 		return response.speak(speakOutput)
 									 .reprompt(repromptOutput)
@@ -96,50 +87,40 @@ const LocationHandler = {
 	},
 };
 
-const FeelingHandler = {
+const ResultHandler = {
 	canHandle(handlerInput) {
 		const request = handlerInput.requestEnvelope.request;
-		console.log("Inside FeelingHandler");
+		console.log("Inside ResultHandler");
 		console.log(JSON.stringify(request));
 
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "FeelingIntent") &&
-					 (attributes.stageNumber === 3);
+					 (request.intent.name === "YesOrNoIntent")
 	},
 	handle(handlerInput) {
-		console.log("Inside FeelingHandler - handle");
+		console.log("Inside DOBHandler - handle");
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 		const response = handlerInput.responseBuilder;
 
 		const slots = handlerInput.requestEnvelope.request.intent.slots;
-		const feelingRating = slots['FeelingRating'].value;
-
-		attributes.feelingRating = feelingRating;
+		const yesorno = slots['Confirmation'].value;
 
 		var speakOutput = "";
+		
+		if (yesorno == "yes"){
+			// Call GET to Yelp API using the helper function httpGet() below
 
-		if (feelingRating === 0) {
-			speakOutput += "Great to hear that you are doing well. I will record your pain level as " + feelingRating + ". Good bye.";
-		}
-		if (feelingRating >7) {
-			speakOutput += "Ouch. I will record your pain level as " + feelingRating + ", and send for help right away. ";
-			speakOutput += "InterSystems will also examine your Unified Care Record, and let your doctors know of any related diagnosis or medication that might be causing your pain. ";
-			speakOutput += "Hope you feel better soon. Good bye."
-		}
-		if (feelingRating > 0 && feelingRating < 8 ) {
-			speakOutput += "I will record your pain level as " + feelingRating + ". ";
-			speakOutput += "InterSystems will process your pain level, examine your Unified Care Record, and let your doctors know of any related diagnosis or medication that might be causing your pain. ";
-			speakOutput += "Hope you feel better soon. Good bye. ";
-		}
+			speakOutput += "I recommend checking out the following restaurants. "
 
-		// INSERT POST / GET
-		SubmitToIRIS(attributes);
-
-		return response.speak(speakOutput)
-										.withShouldEndSession(true)
+		} else {
+			return response.speak("Please restart this skill.")
 										.getResponse(false);
+		}
+
+		speakOutput += "Done!";
+
+		return response.speak(speakOutput);
 	},
 };
 
@@ -172,7 +153,6 @@ const ExitHandler = {
 					 );
 	},
 	handle(handlerInput) {
-		// code to export message as file and feed into IRIS
 
 		return handlerInput.responseBuilder
 			.speak("Good bye.")
@@ -210,11 +190,11 @@ const ErrorHandler = {
 
 function httpGet(query, callback) {
 		var options = {
-				host: 'numbersapi.com',
+				host: 'api.yelp.com',
 				path: '/' + encodeURIComponent(query),
 				method: 'GET',
 				headers: {
-						'Authorization': 'Bearer 5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
+						'Authorization': ''
 					}
 		};
 
@@ -237,7 +217,7 @@ function httpGet(query, callback) {
 		req.end();
 }
 
-const helpMessage = "I didn't quite get that. Please tell me again."
+const helpMessage = "I didn't quite get that. Can you please say that again?"
 
 /* LAMBDA SETUP */
 const skillBuilder = Alexa.SkillBuilders.custom();
@@ -246,6 +226,7 @@ exports.handler = skillBuilder
 		LaunchRequestHandler,
 		CuisineHandler,
 		LocationHandler,
+		ResultHandler,
 		HelpHandler,
 		ExitHandler,
 		SessionEndedRequestHandler
