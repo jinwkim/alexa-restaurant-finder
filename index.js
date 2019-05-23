@@ -102,27 +102,33 @@ const ResultHandler = {
 	async handle(handlerInput) {
 		console.log("Inside ResultHandler - handle");
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
-		const response = handlerInput.responseBuilder;
 
 		const slots = handlerInput.requestEnvelope.request.intent.slots;
 		const yesorno = slots['Confirmation'].value;
 
-		var speakOutput = "";
+		var speakOutput = "Test script. ";
 		
-		if (yesorno === "yes"){
-			// Call GET to Yelp API using the helper function httpGet() below
-			const APIresponse = await httpGet();
-			console.log(APIresponse);
-			attributes.APIresponse = APIresponse.businesses[0].name;
+		// if (yesorno === "no"){
+		// 	speakOutput += "Please restart this skill.";
+		// } else {
+		//     // Call GET to Yelp API using the helper function httpGet() below
+		//     var foodType = attributes.foodType;
+		//     var city = attributes.city;
 
-			speakOutput += "I recommend checking out the following restaurants. ";
-			speakOutput += response.businesses[0].name;
+		// 	const APIresponse = await httpGet(foodType,city);
+		// 	console.log(APIresponse);
+		// 	attributes.APIresponse = APIresponse.businesses[0].name;
 
-		} else {
-			speakOutput += "Please restart this skill.";
-		}
+		// 	speakOutput += "I recommend checking out the following restaurants. ";
+		// 	speakOutput += response.businesses[0].name;
+		// }
 
-		return response.speak(speakOutput).getResponse(false);
+		var APIresponse = await testHttpGet();
+		console.log(APIresponse);
+
+		speakOutput += APIresponse.value.joke;
+
+		return handlerInput.responseBuilder.speak(speakOutput).getResponse(false);
 	},
 };
 
@@ -193,14 +199,15 @@ const ErrorHandler = {
 const helpMessage = "I didn't quite get that. Can you please say that again?"
 
 // https://api.yelp.com/v3/businesses/search?term=korean&location=02142&limit=3&sort_by=review_count&open_now=true&radius=4800
-function httpGet() {
+function httpGet(keyTerm,location) {
   return new Promise(((resolve, reject) => {
     var options = {
         host: 'api.yelp.com',
-        path: '/v3/businesses/search?term=korean&location=02142&limit=3&sort_by=review_count&open_now=true&radius=4800',
+        path: '/v3/businesses/search?term=sushi&location=Boston&limit=3&sort_by=review_count&open_now=true&radius=4800',
         method: 'GET',
         headers: {
-					'Authorization': 'auth-key-goes-here'
+        			'Content-Type': 'application/json',
+					Authorization: 'Bearer 5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
 				},
     };
     
@@ -220,7 +227,39 @@ function httpGet() {
         reject(error);
       });
     });
+
     request.end();
+  }));
+}
+
+function testHttpGet() {
+  return new Promise(((resolve, reject) => {
+    var options = {
+        host: 'api.icndb.com',
+        port: 443,
+        path: '/jokes/random',
+        method: 'GET',
+    };
+    
+    const request = http.request(options, (response) => {
+      // response.setEncoding('utf8');
+      let returnData = '';
+
+      response.on('data', (chunk) => {
+        returnData += chunk;
+      });
+
+      response.on('end', () => {
+        resolve(JSON.parse(returnData));
+      });
+
+      response.on('error', (error) => {
+        reject(error);
+      });
+    });
+
+    request.end();
+
   }));
 }
 
