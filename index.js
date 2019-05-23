@@ -111,9 +111,9 @@ const ResultHandler = {
 		
 		if (yesorno === "yes"){
 			// Call GET to Yelp API using the helper function httpGet() below
-			const response = await httpGet();
-			console.log(response);
-			attributes.restResponse = response.businesses[0].name;
+			const APIresponse = await httpGet();
+			console.log(APIresponse);
+			attributes.APIresponse = APIresponse.businesses[0].name;
 
 			speakOutput += "I recommend checking out the following restaurants. ";
 			speakOutput += response.businesses[0].name;
@@ -200,7 +200,7 @@ function httpGet() {
         path: '/v3/businesses/search?term=korean&location=02142&limit=3&sort_by=review_count&open_now=true&radius=4800',
         method: 'GET',
         headers: {
-					'Authorization': '5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
+					'Authorization': 'auth-key-goes-here'
 				},
     };
     
