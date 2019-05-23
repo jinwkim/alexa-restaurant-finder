@@ -111,21 +111,20 @@ const ResultHandler = {
 		if (yesorno === "no"){
 			speakOutput += "Please restart this skill.";
 		} else {
-		    // Call GET to Yelp API using the helper function httpGet() below
-		    var foodType = attributes.foodType;
-		    var city = attributes.city;
+			// Call GET to Yelp API using the helper function httpGet() below
+			var foodType = attributes.foodType;
+			var city = attributes.city;
 
 			const APIresponse = await httpGet(foodType,city);
 			console.log(APIresponse);
-			attributes.NameOfRestaurantOne = APIresponse.businesses[1].name;
-			attributes.NameOfRestaurantTwo = APIresponse.businesses[2].name;
-			// attributes.NameOfRestaurantThree = APIresponse.businesses[3].name;
+			attributes.NameOfRestaurantOne = APIresponse.businesses[0].name;
+			attributes.NameOfRestaurantTwo = APIresponse.businesses[1].name;
+			attributes.NameOfRestaurantThree = APIresponse.businesses[2].name;
 			// attributes.NumRes = APIresponse.total;
 
 			speakOutput += "I got some results from Yelp. I recommend checking out the following restaurants. How about ";
-			speakOutput += attributes.NameOfRestaurantOne;
-			speakOutput += "? There is also " + attributes.NameOfRestaurantTwo + ".";
-			// speakOutput += "Lastly, there is " + attributes.NameOfRestaurantThree;
+			speakOutput += attributes.NameOfRestaurantOne + ". Perhaps check out " + attributes.NameOfRestaurantTwo + ". ";
+			speakOutput += "Or, " + attributes.NameOfRestaurantThree + ". ";
 		}
 
 		// var APIresponse = await testHttpGet();
@@ -206,33 +205,33 @@ const helpMessage = "I didn't quite get that. Can you please say that again?"
 // https://api.yelp.com/v3/businesses/search?term=korean&location=02142&limit=3&sort_by=review_count&open_now=true&radius=4800
 function httpGet(keyTerm,location) {
   return new Promise(((resolve, reject) => {
-    var options = {
-        host: 'api.yelp.com',
-        path: '/v3/businesses/search?term='+keyTerm+'&location='+location+'&limit=3&sort_by=review_count&open_now=true&radius=4800',
-        method: 'GET',
-        headers: {
+	var options = {
+		host: 'api.yelp.com',
+		path: '/v3/businesses/search?term='+keyTerm+'&location='+location+'&limit=3&sort_by=review_count&open_now=true&radius=4800',
+		method: 'GET',
+		headers: {
 					Authorization: 'Bearer 5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
 				},
-    };
-    
-    const request = http.request(options, (response) => {
-      response.setEncoding('utf8');
-      let returnData = '';
+	};
+	
+	const request = http.request(options, (response) => {
+	  response.setEncoding('utf8');
+	  let returnData = '';
 
-      response.on('data', (chunk) => {
-        returnData += chunk;
-      });
+	  response.on('data', (chunk) => {
+		returnData += chunk;
+	  });
 
-      response.on('end', () => {
-        resolve(JSON.parse(returnData));
-      });
+	  response.on('end', () => {
+		resolve(JSON.parse(returnData));
+	  });
 
-      response.on('error', (error) => {
-        reject(error);
-      });
-    });
+	  response.on('error', (error) => {
+		reject(error);
+	  });
+	});
 
-    request.end();
+	request.end();
   }));
 }
 
@@ -244,7 +243,7 @@ function httpGet(keyTerm,location) {
 //         path: '/jokes/random',
 //         method: 'GET',
 //     };
-    
+	
 //     const request = http.request(options, (response) => {
 //       // response.setEncoding('utf8');
 //       let returnData = '';
