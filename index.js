@@ -3,6 +3,7 @@ const Alexa = require('ask-sdk-core');
 // Initialize http var to utilize REST API
 var http = require('http');
 
+
 /* INTENT HANDLERS */
 const LaunchRequestHandler = {
 	canHandle(handlerInput) {
@@ -11,10 +12,10 @@ const LaunchRequestHandler = {
 	handle(handlerInput) {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
-		var speakOutput = "I am here to help you pick a restaurant. "
-		speakOutput += "What type of cuisine are you feeling like today? Italian? American?"
+		var speakOutput = "I am here to help you pick a restaurant. ";
+		speakOutput += "What type of cuisine are you feeling like today? Italian? American?";
 
-		var repromptOutput = "Hello? Please tell me what kind of food you crave right now. Japanese? Italian? French?"
+		var repromptOutput = "Hello? Please tell me what kind of food you crave right now. Japanese? Italian? French?";
 
 		return handlerInput.responseBuilder
 			.speak(speakOutput)
@@ -32,7 +33,7 @@ const CuisineHandler = {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "CuisineIntent")
+					 (request.intent.name === "CuisineIntent");
 	},
 	handle(handlerInput) {
 		console.log("Inside CuisineHandler - handle");
@@ -63,10 +64,10 @@ const LocationHandler = {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "LocationIntent")
+					 (request.intent.name === "LocationIntent");
 	},
 	handle(handlerInput) {
-		console.log("Inside DOBHandler - handle");
+		console.log("Inside LocationHandler - handle");
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 		const response = handlerInput.responseBuilder;
 
@@ -74,7 +75,7 @@ const LocationHandler = {
 		const city = slots['City'].value;
 
 		attributes.city = city;
-		var foodType = attributes.foodType
+		var foodType = attributes.foodType;
 		
 		var speakOutput = "Based on what you told me, you want to look for " + foodType + " in " + city + ". ";
 		speakOutput += "Is this correct? Please say yes or no.";
@@ -99,7 +100,7 @@ const ResultHandler = {
 					 (request.intent.name === "YesOrNoIntent")
 	},
 	handle(handlerInput) {
-		console.log("Inside DOBHandler - handle");
+		console.log("Inside ResultHandler - handle");
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 		const response = handlerInput.responseBuilder;
 
@@ -108,19 +109,19 @@ const ResultHandler = {
 
 		var speakOutput = "";
 		
-		if (yesorno == "yes"){
+		if (yesorno === "yes"){
 			// Call GET to Yelp API using the helper function httpGet() below
+			// const response = await httpGet();
+			// console.log(response);
 
-			speakOutput += "I recommend checking out the following restaurants. "
+			speakOutput += "I recommend checking out the following restaurants. ";
+			// speakOutput += response.businesses[0].name;
 
 		} else {
-			return response.speak("Please restart this skill.")
-										.getResponse(false);
+			speakOutput += "Please restart this skill.";
 		}
 
-		speakOutput += "Done!";
-
-		return response.speak(speakOutput);
+		return response.speak(speakOutput).getResponse(false);
 	},
 };
 
@@ -188,36 +189,39 @@ const ErrorHandler = {
 	},
 };
 
-function httpGet(query, callback) {
-		var options = {
-				host: 'api.yelp.com',
-				path: '/' + encodeURIComponent(query),
-				method: 'GET',
-				headers: {
-						'Authorization': ''
-					}
-		};
-
-		var req = http.request(options, res => {
-				res.setEncoding('utf8');
-				var responseString = "";
-				
-				//accept incoming data asynchronously
-				res.on('data', chunk => {
-						responseString = responseString + chunk;
-				});
-				
-				//return the data when streaming is complete
-				res.on('end', () => {
-						console.log(responseString);
-						callback(responseString);
-				});
-
-		});
-		req.end();
-}
-
 const helpMessage = "I didn't quite get that. Can you please say that again?"
+
+// https://api.yelp.com/v3/businesses/search?term=korean&location=02142&limit=3&sort_by=review_count&open_now=true&radius=4800
+function httpGet() {
+  return new Promise(((resolve, reject) => {
+    var options = {
+        host: 'api.yelp.com',
+        path: '/v3/businesses/search?term=korean&location=02142&limit=3&sort_by=review_count&open_now=true&radius=4800',
+        method: 'GET',
+        headers: {
+					'Authorization': '5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
+				},
+    };
+    
+    const request = http.request(options, (response) => {
+      response.setEncoding('utf8');
+      let returnData = '';
+
+      response.on('data', (chunk) => {
+        returnData += chunk;
+      });
+
+      response.on('end', () => {
+        resolve(JSON.parse(returnData));
+      });
+
+      response.on('error', (error) => {
+        reject(error);
+      });
+    });
+    request.end();
+  }));
+}
 
 /* LAMBDA SETUP */
 const skillBuilder = Alexa.SkillBuilders.custom();
