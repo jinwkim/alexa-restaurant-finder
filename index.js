@@ -1,7 +1,7 @@
 const Alexa = require('ask-sdk-core');
 
 // Initialize http var to utilize REST API
-var http = require('http');
+var http = require('https');
 
 
 /* INTENT HANDLERS */
@@ -99,7 +99,7 @@ const ResultHandler = {
 		return request.type === "IntentRequest" &&
 					 (request.intent.name === "YesOrNoIntent")
 	},
-	handle(handlerInput) {
+	async handle(handlerInput) {
 		console.log("Inside ResultHandler - handle");
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 		const response = handlerInput.responseBuilder;
@@ -113,6 +113,7 @@ const ResultHandler = {
 			// Call GET to Yelp API using the helper function httpGet() below
 			const response = await httpGet();
 			console.log(response);
+			attributes.restResponse = response.businesses[0].name;
 
 			speakOutput += "I recommend checking out the following restaurants. ";
 			speakOutput += response.businesses[0].name;
