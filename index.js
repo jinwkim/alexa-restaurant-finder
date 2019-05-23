@@ -106,7 +106,7 @@ const ResultHandler = {
 		const slots = handlerInput.requestEnvelope.request.intent.slots;
 		const yesorno = slots['Confirmation'].value;
 
-		var speakOutput = "I got some results from Yelp. ";
+		var speakOutput = " ";
 		
 		if (yesorno === "no"){
 			speakOutput += "Please restart this skill.";
@@ -122,9 +122,9 @@ const ResultHandler = {
 			// attributes.NameOfRestaurantThree = APIresponse.businesses[3].name;
 			// attributes.NumRes = APIresponse.total;
 
-			speakOutput += "I recommend checking out the following restaurants. I see ";
+			speakOutput += "I got some results from Yelp. I recommend checking out the following restaurants. How about ";
 			speakOutput += attributes.NameOfRestaurantOne;
-			speakOutput += ". There is also " + attributes.NameOfRestaurantTwo + ".";
+			speakOutput += "? There is also " + attributes.NameOfRestaurantTwo + ".";
 			// speakOutput += "Lastly, there is " + attributes.NameOfRestaurantThree;
 		}
 
