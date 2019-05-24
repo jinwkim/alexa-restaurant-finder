@@ -14,8 +14,8 @@ You can test the skill by clicking the *Test* tab to use the Alexa Simulator. To
 
 ## Testing Skill - Alexa Skills Store
 This custom Alexa skill will be published to the Alexa Skills Store. To run the skill, download and use the following prompts:
->> Alexa, run restaurant finder.
->> Alexa, start restaurant finder.
+1. Alexa, run restaurant finder.
+2. Alexa, start restaurant finder.
 
 ### License
 MIT License
