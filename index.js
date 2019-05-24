@@ -123,6 +123,14 @@ const ResultHandler = {
 
 			const APIresponse = await httpGet(foodType,city);
 			console.log(APIresponse);
+
+			attributes.numberOfRestaurants = APIresponse.businesses.length;
+
+			// if less than 3 restaurants open right now, terminate
+			if (APIresponse.businesses.length < 3) {
+				return handlerInput.responseBuilder.speak("Hm. It looks like not a lot of restaurants are open right now. Try again later.").getResponse(false);
+			}
+
 			attributes.NameOfRestaurantOne = APIresponse.businesses[0].name;
 			attributes.NameOfRestaurantTwo = APIresponse.businesses[1].name;
 			attributes.NameOfRestaurantThree = APIresponse.businesses[2].name;
