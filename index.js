@@ -13,7 +13,7 @@ const LaunchRequestHandler = {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 	  attributes.stageNumber = 0;
 
-		var speakOutput = "I am here to help you pick a restaurant. ";
+		var speakOutput = "Let me help you pick a restaurant. ";
 		speakOutput += "What type of cuisine are you feeling like today? Italian? American?";
 
 		var repromptOutput = "Hello? Please tell me what kind of food you crave right now. Japanese? Italian? French?";
@@ -48,7 +48,7 @@ const CuisineHandler = {
 		attributes.foodType = foodType;
 		attributes.stageNumber += 1;
 
-		var speakOutput = "Now, in what city are you looking for restaurants?";
+		var speakOutput = "In what city are you looking for restaurants?";
 		var repromptOutput = "Can you please tell me in what city you want to find restaurants?";
 
 		return response.speak(speakOutput)
@@ -126,8 +126,6 @@ const ResultHandler = {
 			attributes.NameOfRestaurantOne = APIresponse.businesses[0].name;
 			attributes.NameOfRestaurantTwo = APIresponse.businesses[1].name;
 			attributes.NameOfRestaurantThree = APIresponse.businesses[2].name;
-
-			// Code to POST the restaurant information to text to user
 
 			speakOutput += "I found some most reviewed restaurants from Yelp that are open right now. I recommend checking out ";
 			speakOutput += attributes.NameOfRestaurantOne + ". Perhaps check out " + attributes.NameOfRestaurantTwo + ". ";
@@ -211,35 +209,39 @@ const helpMessage = "I didn't quite get that. Can you please say that again?"
 
 // https://api.yelp.com/v3/businesses/search?term=korean&location=02142&limit=3&sort_by=review_count&open_now=true&radius=4800
 function httpGet(keyTerm,location) {
-  return new Promise(((resolve, reject) => {
-	var options = {
-		host: 'api.yelp.com',
-		path: '/v3/businesses/search?term='+keyTerm+'&location='+location+'&limit=3&sort_by=review_count&open_now=true&radius=4800',
-		method: 'GET',
-		headers: {
-					Authorization: 'Bearer token from Yelp goes here'
-				},
-	};
-	
-	const request = http.request(options, (response) => {
-	  response.setEncoding('utf8');
-	  let returnData = '';
+	// convert spaces in user input to "+" for path
+	var key_term = keyTerm.split(' ').join('+');
+	var location_city = location.split(' ').join('+');
 
-	  response.on('data', (chunk) => {
-		returnData += chunk;
-	  });
+	return new Promise(((resolve, reject) => {
+		var options = {
+			host: 'api.yelp.com',
+			path: '/v3/businesses/search?term='+key_term+'&location='+location_city+'&limit=3&sort_by=review_count&open_now=true&radius=4800',
+			method: 'GET',
+			headers: {
+						Authorization: 'Bearer token here'
+					},
+		};
+		
+		const request = http.request(options, (response) => {
+			response.setEncoding('utf8');
+			let returnData = '';
 
-	  response.on('end', () => {
-		resolve(JSON.parse(returnData));
-	  });
+			response.on('data', (chunk) => {
+				returnData += chunk;
+			});
 
-	  response.on('error', (error) => {
-		reject(error);
-	  });
-	});
+			response.on('end', () => {
+				resolve(JSON.parse(returnData));
+			});
 
-	request.end();
-  }));
+			response.on('error', (error) => {
+				reject(error);
+			});
+		});
+
+		request.end();
+	}));
 }
 
 // function testHttpGet() {
