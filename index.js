@@ -127,7 +127,7 @@ const ResultHandler = {
 			attributes.NameOfRestaurantTwo = APIresponse.businesses[1].name;
 			attributes.NameOfRestaurantThree = APIresponse.businesses[2].name;
 
-			speakOutput += "I found some most reviewed restaurants from Yelp that are open right now. I recommend checking out ";
+			speakOutput += "I found a few restaurants with the most reviews from Yelp that are open right now. I recommend checking out ";
 			speakOutput += attributes.NameOfRestaurantOne + ". Perhaps check out " + attributes.NameOfRestaurantTwo + ". ";
 			speakOutput += "Or, " + attributes.NameOfRestaurantThree + ". Bon appetit!";
 		}
@@ -219,7 +219,7 @@ function httpGet(keyTerm,location) {
 			path: '/v3/businesses/search?term='+key_term+'&location='+location_city+'&limit=3&sort_by=review_count&open_now=true&radius=4800',
 			method: 'GET',
 			headers: {
-						Authorization: 'Bearer token here'
+						Authorization: 'Bearer 5vLai0RfI-OP7kCK4041R9pu86fDydKYRs-K64YVdjEUunLnw508qogHf4ZGhTdSKJ6XYuXZJDxevR07pnSZlZT0jkKLM9b7TKQ19m0D0GUYYLHXl5gciIKYqfvlXHYx'
 					},
 		};
 		
