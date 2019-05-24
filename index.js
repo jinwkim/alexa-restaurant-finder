@@ -11,6 +11,7 @@ const LaunchRequestHandler = {
 	},
 	handle(handlerInput) {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
+	  attributes.stageNumber = 0;
 
 		var speakOutput = "I am here to help you pick a restaurant. ";
 		speakOutput += "What type of cuisine are you feeling like today? Italian? American?";
@@ -33,7 +34,8 @@ const CuisineHandler = {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "CuisineIntent");
+					 (request.intent.name === "CuisineIntent") &&
+           (attributes.stageNumber === 0);
 	},
 	handle(handlerInput) {
 		console.log("Inside CuisineHandler - handle");
@@ -44,6 +46,7 @@ const CuisineHandler = {
 		const foodType = slots['FoodType'].value;
 
 		attributes.foodType = foodType;
+		attributes.stageNumber += 1;
 
 		var speakOutput = "Now, in what city are you looking for restaurants?";
 		var repromptOutput = "Can you please tell me in what city you want to find restaurants?";
@@ -64,7 +67,8 @@ const LocationHandler = {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "LocationIntent");
+					 (request.intent.name === "LocationIntent") &&
+           (attributes.stageNumber === 1);
 	},
 	handle(handlerInput) {
 		console.log("Inside LocationHandler - handle");
@@ -75,10 +79,11 @@ const LocationHandler = {
 		const city = slots['City'].value;
 
 		attributes.city = city;
+		attributes.stageNumber += 1;
 		var foodType = attributes.foodType;
 		
 		var speakOutput = "Based on what you told me, you want to look for " + foodType + " in " + city + ". ";
-		speakOutput += "Is this correct? Please say yes or no.";
+		speakOutput += "Is this correct?";
 		
 		var repromptOutput = "Can you please confirm? Please say yes or no.";
 
@@ -97,7 +102,8 @@ const ResultHandler = {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		return request.type === "IntentRequest" &&
-					 (request.intent.name === "YesOrNoIntent")
+					 (request.intent.name === "YesOrNoIntent") &&
+           (attributes.stageNumber === 2);
 	},
 	async handle(handlerInput) {
 		console.log("Inside ResultHandler - handle");
@@ -120,11 +126,10 @@ const ResultHandler = {
 			attributes.NameOfRestaurantOne = APIresponse.businesses[0].name;
 			attributes.NameOfRestaurantTwo = APIresponse.businesses[1].name;
 			attributes.NameOfRestaurantThree = APIresponse.businesses[2].name;
-			// attributes.NumRes = APIresponse.total;
 
-			speakOutput += "I got some results from Yelp. I recommend checking out the following restaurants. How about ";
+			speakOutput += "I found some most reviewed restaurants from Yelp that are open right now. I recommend checking out ";
 			speakOutput += attributes.NameOfRestaurantOne + ". Perhaps check out " + attributes.NameOfRestaurantTwo + ". ";
-			speakOutput += "Or, " + attributes.NameOfRestaurantThree + ". ";
+			speakOutput += "Or, " + attributes.NameOfRestaurantThree + ". Bon appetit!";
 		}
 
 		// var APIresponse = await testHttpGet();
