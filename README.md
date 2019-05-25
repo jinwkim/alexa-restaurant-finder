@@ -13,7 +13,7 @@ Now in the *Code* tab (found at the top of the Console), insert the contents of 
 You can test the skill by clicking the *Test* tab to use the Alexa Simulator. To start, click the mic and say *"run restaurant finder"* or type the same prompt into the dialog box.
 
 ## Testing Skill - Alexa Skills Store
-This custom Alexa skill will be published to the Alexa Skills Store. To run the skill, download and use the following prompts:
+This custom Alexa skill is available on the [Alexa Skills Store](https://www.amazon.com/dp/B07S9JGXC8/ref=sr_1_4?keywords=restaurant+finder&qid=1558812256&s=digital-skills&sr=1-4). To run the skill, download and use the following prompts:
 1. Alexa, run restaurant finder.
 2. Alexa, start restaurant finder.
 
